@@ -1,50 +1,28 @@
-
-import os
 from textwrap import dedent
 from dotenv import load_dotenv
-
 from agno.agent import Agent
-from agno.models.google import Gemini
+from agno.models.openai import OpenAIResponses
 from agno.tools.youtube import YouTubeTools
 
-# Load environment variables
 load_dotenv()
-
-# Map Gemini API key to Agno's expected variable
-gemini_api_key = os.getenv("GEMINI_API_KEY")
-
-if not gemini_api_key:
-    raise ValueError("GEMINI_API_KEY not found in .env file")
-
-os.environ["GOOGLE_API_KEY"] = gemini_api_key
-
 
 def build_youtube_agent():
     return Agent(
         name="YouTube Agent",
-
-        model=Gemini(
-            id="gemini-3.8-flash"
-        ),
-
+        model=OpenAIResponses(id="gpt-5.2"),
         tools=[YouTubeTools()],
-
         instructions=dedent("""\
-            You are an expert YouTube content analyst with a keen eye for detail!
-
+            You are an expert YouTube content analyst with a keen eye for detail! 🎓
             Follow these steps for comprehensive video analysis:
-
             1. Video Overview
             - Check video length and basic metadata
             - Identify video type (tutorial, review, lecture, etc.)
             - Note the content structure
-
             2. Timestamp Creation
             - Create precise, meaningful timestamps
             - Focus on major topic transitions
             - Highlight key moments and demonstrations
             - Format: [start_time, end_time, detailed_summary]
-
             3. Content Organization
             - Group related segments
             - Identify main themes
@@ -53,13 +31,12 @@ def build_youtube_agent():
             Your analysis style:
             - Begin with a video overview
             - Use clear, descriptive segment titles
-            - Include relevant emojis:
-              📚 Educational
-              💻 Technical
-              🎮 Gaming
-              📱 Tech Review
-              🎨 Creative
-
+            - Include relevant emojis for content types:
+            📚 Educational
+            💻 Technical
+            🎮 Gaming
+            📱 Tech Review
+            🎨 Creative
             - Highlight key learning points
             - Note practical demonstrations
             - Mark important references
@@ -71,17 +48,11 @@ def build_youtube_agent():
             - Maintain consistent detail level
             - Focus on valuable content markers
         """),
-
         add_datetime_to_context=True,
         markdown=True,
     )
 
-
-if __name__ == "__main__":
-
-    youtube_agent = build_youtube_agent()
-
-    youtube_agent.print_response(
-        "Analyze this video: https://www.youtube.com/watch?v=JkaxUblCGz0",
-        stream=True,
-    )
+# youtube_agent.print_response(
+#     "Analyze this video: https://www.youtube.com/watch?v=JkaxUblCGz0",
+#     stream=True,
+# )
